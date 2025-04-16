@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Healthy Choices Game - Singapore Edition</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; background: #f0f8ff; }
+    h1 { color: #2e8b57; }
+    .container { display: flex; justify-content: space-around; padding: 20px; }
+    .dropzone {
+      width: 40%; padding: 20px; border: 3px dashed #2e8b57; border-radius: 10px; min-height: 300px;
+      background-color: #e6ffe6;
+    }
+    .dropzone h2 { color: #2e8b57; }
+    .items { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 20px; }
+    .item { width: 100px; cursor: grab; }
+    .item img { width: 100px; border-radius: 8px; }
+    .correct { border: 3px solid green; }
+    .incorrect { border: 3px solid red; }
+  </style>
+</head>
+<body>
+  <h1>Sort the Healthy Choices - Singapore Edition!</h1>
+  <p>Drag each item into the correct category</p>
+  <div class="items" id="items"></div>
+  <div class="container">
+    <div class="dropzone" id="good" ondrop="drop(event, 'good')" ondragover="allowDrop(event)">
+      <h2>Good for You</h2>
+    </div>
+    <div class="dropzone" id="bad" ondrop="drop(event, 'bad')" ondragover="allowDrop(event)">
+      <h2>Not Good for You</h2>
+    </div>
+  </div>
+
+  <script>
+    const items = [
+      { id: 'kaya_toast', src: 'https://i.imgur.com/XItKoPp.png', type: 'bad' },
+      { id: 'roti_prata', src: 'https://i.imgur.com/SfdUULJ.png', type: 'bad' },
+      { id: 'durian', src: 'https://i.imgur.com/tfrhMCd.png', type: 'good' },
+      { id: 'milo_dino', src: 'https://i.imgur.com/KXv59UO.png', type: 'bad' },
+      { id: 'tai_chi', src: 'https://i.imgur.com/JIToUoq.png', type: 'good' },
+      { id: 'cycling', src: 'https://i.imgur.com/xaz8vMZ.png', type: 'good' },
+      { id: 'char_kway_teow', src: 'https://i.imgur.com/hMP5q9h.png', type: 'bad' },
+      { id: 'salad', src: 'https://i.imgur.com/N0b6rCF.png', type: 'good' },
+      { id: 'chicken_rice', src: 'https://i.imgur.com/YQd3cHS.png', type: 'good' },
+      { id: 'bubble_tea', src: 'https://i.imgur.com/Fs6NLz0.png', type: 'bad' }
+    ];
+
+    const itemsContainer = document.getElementById('items');
+    items.forEach(item => {
+      const div = document.createElement('div');
+      div.classList.add('item');
+      div.setAttribute('draggable', 'true');
+      div.setAttribute('id', item.id);
+      div.setAttribute('data-type', item.type);
+      div.ondragstart = drag;
+      div.innerHTML = `<img src="${item.src}" alt="${item.id}" />`;
+      itemsContainer.appendChild(div);
+    });
+
+    function allowDrop(ev) {
+      ev.preventDefault();
+    }
+
+    function drag(ev) {
+      ev.dataTransfer.setData("text", ev.target.id);
+    }
+
+    function drop(ev, zoneType) {
+      ev.preventDefault();
+      const data = ev.dataTransfer.getData("text");
+      const draggedItem = document.getElementById(data);
+      const itemType = draggedItem.getAttribute('data-type');
+
+      if (zoneType === itemType) {
+        draggedItem.classList.add('correct');
+        draggedItem.draggable = false;
+        ev.target.appendChild(draggedItem);
+      } else {
+        draggedItem.classList.add('incorrect');
+        setTimeout(() => draggedItem.classList.remove('incorrect'), 1000);
+      }
+    }
+  </script>
+</body>
+</html>
